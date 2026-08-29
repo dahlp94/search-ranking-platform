@@ -1,0 +1,56 @@
+[
+  {
+    "kind": "bm25_strong",
+    "reason": "Highest BM25 NDCG among queries with mixed ESCI labels.",
+    "query_id": "25822",
+    "query": "christian journal stickers",
+    "ndcg@10_bm25": 1.0,
+    "ndcg@10_tfidf": 1.0,
+    "ndcg@10_random": 0.7948833326720565
+  },
+  {
+    "kind": "bm25_weak",
+    "reason": "Lowest BM25 NDCG among queries that have at least one E/S item.",
+    "query_id": "70157",
+    "query": "modily clothing",
+    "ndcg@10_bm25": 0.0,
+    "ndcg@10_tfidf": 0.0,
+    "ndcg@10_random": 0.17813419712701378
+  },
+  {
+    "kind": "brand_or_model",
+    "reason": "Query contains a digit, typical of brand/model-number lookups.",
+    "query_id": "80044",
+    "query": "pilot g2 ultra fine",
+    "ndcg@10_bm25": 1.0,
+    "ndcg@10_tfidf": 1.0,
+    "ndcg@10_random": 0.9044360217369977
+  },
+  {
+    "kind": "broad_generic",
+    "reason": "Short query, more likely to be broad/generic.",
+    "query_id": "115808",
+    "query": "zodiac",
+    "ndcg@10_bm25": 0.725734530544632,
+    "ndcg@10_tfidf": 0.721801830382049,
+    "ndcg@10_random": 0.5384109300791364
+  },
+  {
+    "kind": "lexical_overlap_misleading",
+    "reason": "BM25 top result has high title overlap but is labeled Irrelevant.",
+    "query_id": "9724",
+    "query": "apple iphone 11 pro unlocked",
+    "ndcg@10_bm25": 0.5562549288923868,
+    "ndcg@10_tfidf": 0.6624456845665935,
+    "ndcg@10_random": 0.5651119955737798
+  },
+  {
+    "kind": "tfidf_bm25_disagree",
+    "reason": "Largest absolute NDCG@10 gap between BM25 and TF-IDF.",
+    "query_id": "106401",
+    "query": "ugly stik custom",
+    "ndcg@10_bm25": 0.19965261294711217,
+    "ndcg@10_tfidf": 0.839113896694181,
+    "ndcg@10_random": 0.6651131211405279
+  }
+]

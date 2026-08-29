@@ -1,0 +1,564 @@
+{
+  "k": 10,
+  "partition": "project_validation",
+  "n_queries": 3134,
+  "n_rows": 63038,
+  "models": {
+    "random": {
+      "n_queries": 3134,
+      "model": "random",
+      "ndcg@10": {
+        "mean": 0.7610970382900956,
+        "median": 0.820747383266845,
+        "std": 0.18630279864856752,
+        "p25": 0.6781488199587768,
+        "p75": 0.8937208167331471
+      },
+      "recall@10": {
+        "mean": 0.5684262087724409,
+        "median": 0.625,
+        "std": 0.1803400133105915,
+        "p25": 0.5384615384615384,
+        "p75": 0.6428571428571429
+      },
+      "mrr": {
+        "mean": 0.875707577860387,
+        "median": 1.0,
+        "std": 0.2545522166498251,
+        "p25": 1.0,
+        "p75": 1.0
+      }
+    },
+    "tfidf": {
+      "n_queries": 3134,
+      "model": "tfidf",
+      "ndcg@10": {
+        "mean": 0.8172928564663116,
+        "median": 0.8675021601272528,
+        "std": 0.16711721538771626,
+        "p25": 0.7618822996615044,
+        "p75": 0.9309396307820335
+      },
+      "recall@10": {
+        "mean": 0.5921824261421161,
+        "median": 0.625,
+        "std": 0.1912272948359776,
+        "p25": 0.5555555555555556,
+        "p75": 0.6666666666666666
+      },
+      "mrr": {
+        "mean": 0.9059623832841177,
+        "median": 1.0,
+        "std": 0.22926965773715768,
+        "p25": 1.0,
+        "p75": 1.0
+      }
+    },
+    "bm25": {
+      "n_queries": 3134,
+      "model": "bm25",
+      "ndcg@10": {
+        "mean": 0.8124080379065216,
+        "median": 0.8654994761511733,
+        "std": 0.17060874427691444,
+        "p25": 0.7447371351598927,
+        "p75": 0.9304705988607561
+      },
+      "recall@10": {
+        "mean": 0.5906139164403201,
+        "median": 0.625,
+        "std": 0.19256706258663348,
+        "p25": 0.5454545454545454,
+        "p75": 0.6666666666666666
+      },
+      "mrr": {
+        "mean": 0.898849526984918,
+        "median": 1.0,
+        "std": 0.23755105266202808,
+        "p25": 1.0,
+        "p75": 1.0
+      }
+    }
+  },
+  "comparison": {
+    "bm25_vs_tfidf": {
+      "metric": "ndcg@10",
+      "left_model": "bm25",
+      "right_model": "tfidf",
+      "n_queries_compared": 3134,
+      "bm25_beats_tfidf": 1017,
+      "tfidf_beats_bm25": 1271,
+      "ties": 846,
+      "mean_diff_left_minus_right": -0.004884818559790201,
+      "largest_positive_diffs": [
+        {
+          "query_id": 46493,
+          "query": "gold slave for 15 years",
+          "ndcg@10_bm25": 1.0,
+          "ndcg@10_tfidf": 0.5,
+          "diff": 0.5
+        },
+        {
+          "query_id": 33138,
+          "query": "die driver",
+          "ndcg@10_bm25": 1.0,
+          "ndcg@10_tfidf": 0.6309297535714574,
+          "diff": 0.3690702464285426
+        },
+        {
+          "query_id": 72989,
+          "query": "netscout wifi detector",
+          "ndcg@10_bm25": 0.9060254355346823,
+          "ndcg@10_tfidf": 0.5540663910176149,
+          "diff": 0.3519590445170674
+        },
+        {
+          "query_id": 79518,
+          "query": "phone case samsung galaxy s8 otterbox",
+          "ndcg@10_bm25": 0.8904022416585923,
+          "ndcg@10_tfidf": 0.5924577430382714,
+          "diff": 0.2979444986203209
+        },
+        {
+          "query_id": 33361,
+          "query": "dinosaur bike",
+          "ndcg@10_bm25": 0.9095568793261904,
+          "ndcg@10_tfidf": 0.6168826233816105,
+          "diff": 0.29267425594457996
+        },
+        {
+          "query_id": 10628,
+          "query": "asg sniper",
+          "ndcg@10_bm25": 0.837993815480853,
+          "ndcg@10_tfidf": 0.5582604437617528,
+          "diff": 0.2797333717191003
+        },
+        {
+          "query_id": 68413,
+          "query": "metal picture frames for living room",
+          "ndcg@10_bm25": 0.798762895232889,
+          "ndcg@10_tfidf": 0.5225546821005839,
+          "diff": 0.27620821313230515
+        },
+        {
+          "query_id": 32901,
+          "query": "dht blocker without biotin",
+          "ndcg@10_bm25": 0.8626480741294441,
+          "ndcg@10_tfidf": 0.588954414661456,
+          "diff": 0.27369365946798807
+        },
+        {
+          "query_id": 5544,
+          "query": "96 civic quarter panel",
+          "ndcg@10_bm25": 0.4692787260227565,
+          "ndcg@10_tfidf": 0.23463936301137825,
+          "diff": 0.23463936301137825
+        },
+        {
+          "query_id": 1015,
+          "query": "1.6 refrigerator without freezer",
+          "ndcg@10_bm25": 0.7990803407583585,
+          "ndcg@10_tfidf": 0.57018972227249,
+          "diff": 0.22889061848586856
+        }
+      ],
+      "largest_negative_diffs": [
+        {
+          "query_id": 106401,
+          "query": "ugly stik custom",
+          "ndcg@10_bm25": 0.19965261294711217,
+          "ndcg@10_tfidf": 0.839113896694181,
+          "diff": -0.6394612837470688
+        },
+        {
+          "query_id": 40438,
+          "query": "fire emblem 3 houses merch",
+          "ndcg@10_bm25": 0.32041739428146926,
+          "ndcg@10_tfidf": 0.867995477785511,
+          "diff": -0.5475780835040418
+        },
+        {
+          "query_id": 8627,
+          "query": "amazon tv 50 inch",
+          "ndcg@10_bm25": 0.3126873201355758,
+          "ndcg@10_tfidf": 0.6874834680680725,
+          "diff": -0.37479614793249666
+        },
+        {
+          "query_id": 20465,
+          "query": "bulk canvas bags",
+          "ndcg@10_bm25": 0.48992108689568525,
+          "ndcg@10_tfidf": 0.8447089553623768,
+          "diff": -0.3547878684666915
+        },
+        {
+          "query_id": 52813,
+          "query": "im a big brother book",
+          "ndcg@10_bm25": 0.5931729515195114,
+          "ndcg@10_tfidf": 0.9469024295259745,
+          "diff": -0.35372947800646304
+        },
+        {
+          "query_id": 24994,
+          "query": "charles angels",
+          "ndcg@10_bm25": 0.5536912854565033,
+          "ndcg@10_tfidf": 0.8796648654899675,
+          "diff": -0.3259735800334642
+        },
+        {
+          "query_id": 31972,
+          "query": "deck installation tools",
+          "ndcg@10_bm25": 0.25076567541952166,
+          "ndcg@10_tfidf": 0.5656060796007277,
+          "diff": -0.31484040418120607
+        },
+        {
+          "query_id": 89048,
+          "query": "ruffle coat",
+          "ndcg@10_bm25": 0.11751610475642714,
+          "ndcg@10_tfidf": 0.431992295847858,
+          "diff": -0.3144761910914308
+        },
+        {
+          "query_id": 78969,
+          "query": "percy jackson hardcover box set",
+          "ndcg@10_bm25": 0.5879735332414809,
+          "ndcg@10_tfidf": 0.9005598165256876,
+          "diff": -0.3125862832842067
+        },
+        {
+          "query_id": 18978,
+          "query": "bowflex dumbell handle",
+          "ndcg@10_bm25": 0.4236766450873189,
+          "ndcg@10_tfidf": 0.7312625444731048,
+          "diff": -0.3075858993857859
+        }
+      ]
+    },
+    "bm25_vs_random": {
+      "metric": "ndcg@10",
+      "left_model": "bm25",
+      "right_model": "random",
+      "n_queries_compared": 3134,
+      "bm25_beats_random": 1987,
+      "random_beats_bm25": 1110,
+      "ties": 37,
+      "mean_diff_left_minus_right": 0.05131099961642583,
+      "largest_positive_diffs": [
+        {
+          "query_id": 46493,
+          "query": "gold slave for 15 years",
+          "ndcg@10_bm25": 1.0,
+          "ndcg@10_random": 0.0,
+          "diff": 1.0
+        },
+        {
+          "query_id": 62495,
+          "query": "liilispoetic home",
+          "ndcg@10_bm25": 0.8937469570107012,
+          "ndcg@10_random": 0.0,
+          "diff": 0.8937469570107012
+        },
+        {
+          "query_id": 47701,
+          "query": "growing older but not up",
+          "ndcg@10_bm25": 0.9106020359000185,
+          "ndcg@10_random": 0.06943122193677727,
+          "diff": 0.8411708139632412
+        },
+        {
+          "query_id": 53995,
+          "query": "iphone 11 back protector",
+          "ndcg@10_bm25": 0.9842479978850486,
+          "ndcg@10_random": 0.17675252203158504,
+          "diff": 0.8074954758534636
+        },
+        {
+          "query_id": 496,
+          "query": "02 ford sport trac disc brakes",
+          "ndcg@10_bm25": 0.8920308669417227,
+          "ndcg@10_random": 0.09820793929940805,
+          "diff": 0.7938229276423147
+        },
+        {
+          "query_id": 37284,
+          "query": "elephate smoke pipe",
+          "ndcg@10_bm25": 0.7653606369886218,
+          "ndcg@10_random": 0.0,
+          "diff": 0.7653606369886218
+        },
+        {
+          "query_id": 55048,
+          "query": "it eddies cast",
+          "ndcg@10_bm25": 1.0,
+          "ndcg@10_random": 0.23877292085081495,
+          "diff": 0.7612270791491851
+        },
+        {
+          "query_id": 14510,
+          "query": "bed lift automatic",
+          "ndcg@10_bm25": 0.8916646218677058,
+          "ndcg@10_random": 0.15674376202286502,
+          "diff": 0.7349208598448408
+        },
+        {
+          "query_id": 419,
+          "query": "0.0 sticker not today",
+          "ndcg@10_bm25": 0.8980517442734133,
+          "ndcg@10_random": 0.19694551601238366,
+          "diff": 0.7011062282610296
+        },
+        {
+          "query_id": 72273,
+          "query": "nascar parts",
+          "ndcg@10_bm25": 0.8217940195182548,
+          "ndcg@10_random": 0.14731190894911209,
+          "diff": 0.6744821105691428
+        }
+      ],
+      "largest_negative_diffs": [
+        {
+          "query_id": 64665,
+          "query": "mackenzie morgan",
+          "ndcg@10_bm25": 0.0,
+          "ndcg@10_random": 0.9197207891481876,
+          "diff": -0.9197207891481876
+        },
+        {
+          "query_id": 89048,
+          "query": "ruffle coat",
+          "ndcg@10_bm25": 0.11751610475642714,
+          "ndcg@10_random": 0.7888688323685816,
+          "diff": -0.6713527276121545
+        },
+        {
+          "query_id": 52719,
+          "query": "if only night would not come",
+          "ndcg@10_bm25": 0.38685280723454163,
+          "ndcg@10_random": 1.0,
+          "diff": -0.6131471927654584
+        },
+        {
+          "query_id": 61546,
+          "query": "leo mckern",
+          "ndcg@10_bm25": 0.2943419908374364,
+          "ndcg@10_random": 0.8417771098923537,
+          "diff": -0.5474351190549173
+        },
+        {
+          "query_id": 1546,
+          "query": "108 inches quartz vanity tops without sink",
+          "ndcg@10_bm25": 0.059838102734353936,
+          "ndcg@10_random": 0.5774815084869431,
+          "diff": -0.5176434057525892
+        },
+        {
+          "query_id": 84908,
+          "query": "quedidilla maker",
+          "ndcg@10_bm25": 0.5,
+          "ndcg@10_random": 1.0,
+          "diff": -0.5
+        },
+        {
+          "query_id": 30680,
+          "query": "cuisinart mini prep plus replacement parts",
+          "ndcg@10_bm25": 0.369386596448216,
+          "ndcg@10_random": 0.8501591578697533,
+          "diff": -0.4807725614215373
+        },
+        {
+          "query_id": 101960,
+          "query": "the expanse season 1",
+          "ndcg@10_bm25": 0.0,
+          "ndcg@10_random": 0.46927872602275644,
+          "diff": -0.46927872602275644
+        },
+        {
+          "query_id": 106401,
+          "query": "ugly stik custom",
+          "ndcg@10_bm25": 0.19965261294711217,
+          "ndcg@10_random": 0.6651131211405279,
+          "diff": -0.4654605081934157
+        },
+        {
+          "query_id": 85939,
+          "query": "reading support stand with pillow",
+          "ndcg@10_bm25": 0.44453765479912294,
+          "ndcg@10_random": 0.8930221965838605,
+          "diff": -0.44848454178473757
+        }
+      ]
+    },
+    "tfidf_vs_random": {
+      "metric": "ndcg@10",
+      "left_model": "tfidf",
+      "right_model": "random",
+      "n_queries_compared": 3134,
+      "tfidf_beats_random": 2024,
+      "random_beats_tfidf": 1069,
+      "ties": 41,
+      "mean_diff_left_minus_right": 0.05619581817621602,
+      "largest_positive_diffs": [
+        {
+          "query_id": 62495,
+          "query": "liilispoetic home",
+          "ndcg@10_tfidf": 0.8850578192958565,
+          "ndcg@10_random": 0.0,
+          "diff": 0.8850578192958565
+        },
+        {
+          "query_id": 496,
+          "query": "02 ford sport trac disc brakes",
+          "ndcg@10_tfidf": 0.9395664345169855,
+          "ndcg@10_random": 0.09820793929940805,
+          "diff": 0.8413584952175774
+        },
+        {
+          "query_id": 47701,
+          "query": "growing older but not up",
+          "ndcg@10_tfidf": 0.9106020359000185,
+          "ndcg@10_random": 0.06943122193677727,
+          "diff": 0.8411708139632412
+        },
+        {
+          "query_id": 53995,
+          "query": "iphone 11 back protector",
+          "ndcg@10_tfidf": 0.9842479978850486,
+          "ndcg@10_random": 0.17675252203158504,
+          "diff": 0.8074954758534636
+        },
+        {
+          "query_id": 37284,
+          "query": "elephate smoke pipe",
+          "ndcg@10_tfidf": 0.7653606369886218,
+          "ndcg@10_random": 0.0,
+          "diff": 0.7653606369886218
+        },
+        {
+          "query_id": 55048,
+          "query": "it eddies cast",
+          "ndcg@10_tfidf": 1.0,
+          "ndcg@10_random": 0.23877292085081495,
+          "diff": 0.7612270791491851
+        },
+        {
+          "query_id": 14510,
+          "query": "bed lift automatic",
+          "ndcg@10_tfidf": 0.869166212195859,
+          "ndcg@10_random": 0.15674376202286502,
+          "diff": 0.712422450172994
+        },
+        {
+          "query_id": 419,
+          "query": "0.0 sticker not today",
+          "ndcg@10_tfidf": 0.8980517442734133,
+          "ndcg@10_random": 0.19694551601238366,
+          "diff": 0.7011062282610296
+        },
+        {
+          "query_id": 106174,
+          "query": "two tone dress",
+          "ndcg@10_tfidf": 1.0,
+          "ndcg@10_random": 0.36331756126716835,
+          "diff": 0.6366824387328316
+        },
+        {
+          "query_id": 87294,
+          "query": "retirement without borders",
+          "ndcg@10_tfidf": 0.7742769878006599,
+          "ndcg@10_random": 0.14957526632378415,
+          "diff": 0.6247017214768757
+        }
+      ],
+      "largest_negative_diffs": [
+        {
+          "query_id": 64665,
+          "query": "mackenzie morgan",
+          "ndcg@10_tfidf": 0.0,
+          "ndcg@10_random": 0.9197207891481876,
+          "diff": -0.9197207891481876
+        },
+        {
+          "query_id": 61546,
+          "query": "leo mckern",
+          "ndcg@10_tfidf": 0.2943419908374364,
+          "ndcg@10_random": 0.8417771098923537,
+          "diff": -0.5474351190549173
+        },
+        {
+          "query_id": 15570,
+          "query": "big and tall ripped shorts for men",
+          "ndcg@10_tfidf": 0.3495116187706584,
+          "ndcg@10_random": 0.8583764002517861,
+          "diff": -0.5088647814811277
+        },
+        {
+          "query_id": 30680,
+          "query": "cuisinart mini prep plus replacement parts",
+          "ndcg@10_tfidf": 0.3432666450301509,
+          "ndcg@10_random": 0.8501591578697533,
+          "diff": -0.5068925128396023
+        },
+        {
+          "query_id": 52719,
+          "query": "if only night would not come",
+          "ndcg@10_tfidf": 0.5,
+          "ndcg@10_random": 1.0,
+          "diff": -0.5
+        },
+        {
+          "query_id": 84908,
+          "query": "quedidilla maker",
+          "ndcg@10_tfidf": 0.5,
+          "ndcg@10_random": 1.0,
+          "diff": -0.5
+        },
+        {
+          "query_id": 85939,
+          "query": "reading support stand with pillow",
+          "ndcg@10_tfidf": 0.3935520219717318,
+          "ndcg@10_random": 0.8930221965838605,
+          "diff": -0.4994701746121287
+        },
+        {
+          "query_id": 101960,
+          "query": "the expanse season 1",
+          "ndcg@10_tfidf": 0.0,
+          "ndcg@10_random": 0.46927872602275644,
+          "diff": -0.46927872602275644
+        },
+        {
+          "query_id": 1546,
+          "query": "108 inches quartz vanity tops without sink",
+          "ndcg@10_tfidf": 0.11780186401481077,
+          "ndcg@10_random": 0.5774815084869431,
+          "diff": -0.4596796444721324
+        },
+        {
+          "query_id": 33905,
+          "query": "disposable coffee cups without lids",
+          "ndcg@10_tfidf": 0.5088967771951836,
+          "ndcg@10_random": 0.9543384299005628,
+          "diff": -0.4454416527053793
+        }
+      ]
+    }
+  },
+  "mean_table": {
+    "random": {
+      "ndcg@10": 0.7610970382900956,
+      "recall@10": 0.5684262087724409,
+      "mrr": 0.875707577860387
+    },
+    "tfidf": {
+      "ndcg@10": 0.8172928564663116,
+      "recall@10": 0.5921824261421161,
+      "mrr": 0.9059623832841177
+    },
+    "bm25": {
+      "ndcg@10": 0.8124080379065216,
+      "recall@10": 0.5906139164403201,
+      "mrr": 0.898849526984918
+    }
+  }
+}

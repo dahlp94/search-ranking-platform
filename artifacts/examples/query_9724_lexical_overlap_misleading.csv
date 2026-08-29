@@ -1,0 +1,17 @@
+query_id,query,product_id,product_title,esci_label,relevance_gain,random_score,rank_random,tfidf_score,rank_tfidf,bm25_score,rank_bm25
+9724,apple iphone 11 pro unlocked,B07Z4681LQ,"(Renewed) Apple iPhone 11 Pro Max, US Version, 256GB, Midnight - Unlocked",I,0,0.6265354744348411,7,0.5860498034558295,2,2.198713461203979,1
+9724,apple iphone 11 pro unlocked,B07ZQRL9XY,"Apple iPhone 11 Pro, US Version, 256GB, Space Gray - Unlocked (Renewed)",E,3,0.6182187116116976,8,0.6404364331956389,1,2.198713461203979,2
+9724,apple iphone 11 pro unlocked,B07ZPKR714,"(Renewed) Apple iPhone 11, US Version, 128GB, Black - Unlocked",I,0,0.7979274729466095,5,0.40789956740726474,3,1.852643123192435,3
+9724,apple iphone 11 pro unlocked,B07XSRG2BZ,Apple Simple Mobile Prepaid - Apple iPhone 11 Pro (64GB) - Midnight Green [Locked to Carrier – Simple Mobile],S,2,0.01164906015842071,16,0.28424542054341695,5,1.6631881446371075,4
+9724,apple iphone 11 pro unlocked,B07XSR733W,Simple Mobile Prepaid - Apple iPhone 11 Pro Max (64GB) - Space Gray [Locked to Carrier – Simple Mobile],I,0,0.9060755237229866,2,0.2632956528268009,6,1.4979926671899628,5
+9724,apple iphone 11 pro unlocked,B0775H5HJW,"Apple iPhone X, GSM Unlocked, 256GB - Silver (Renewed)",S,2,0.10517062322111459,13,0.23260953352201463,8,1.3768491965985599,6
+9724,apple iphone 11 pro unlocked,B082MDD4BD,"[3 Pack] QHOHQ Camera Lens Protector for iPhone 11 Pro Max(6.5""),iPhone 11 Pro(5.8"") Tempered Glass,[Easy to Install] [9H Hardness] Anti-Scratch Screen Protector (Black)",C,1,0.971275553759025,1,0.3142728133202841,4,1.3600258919465578,7
+9724,apple iphone 11 pro unlocked,B07756QYST,"(Renewed) Apple iPhone 8, US Version, 64GB, Silver - Unlocked",S,2,0.5086303693364302,9,0.2404644598215398,7,1.3177181842781924,8
+9724,apple iphone 11 pro unlocked,B07PBCJWJ4,"Apple iPhone XR, US Version, 256GB, Red - Unlocked (Renewed)",S,2,0.3365649190028105,11,0.21244662823927388,12,1.3177181842781924,9
+9724,apple iphone 11 pro unlocked,B081TJFVCJ,"Apple iPhone X, 64GB, Space Gray - Fully Unlocked (Renewed)",S,2,0.2620559659141427,12,0.22663467974991103,10,1.3177181842781924,10
+9724,apple iphone 11 pro unlocked,B07756XHL4,"Apple iPhone 8 Plus, US Version, 256GB, Silver - Unlocked (Renewed)",S,2,0.7764178633670938,6,0.20688314866596602,14,1.263456983667366,11
+9724,apple iphone 11 pro unlocked,B07TJBCC7H,"(Renewed) Apple iPhone XS, US Version, 256GB, Space Gray - Unlocked",S,2,0.883154892140589,4,0.23128117115341865,9,1.263456983667366,12
+9724,apple iphone 11 pro unlocked,B07TK6SPQK,"Apple iPhone XS Max, US Version, 256GB, Silver - Unlocked (Renewed)",S,2,0.41580448838500694,10,0.22338385343180248,11,1.263456983667366,13
+9724,apple iphone 11 pro unlocked,B077578W38,"Apple iPhone X, US Version, 64GB, Space Gray - Fully Unlocked (Renewed)",S,2,0.04839865889037731,15,0.2101733686547882,13,1.213487797826086,14
+9724,apple iphone 11 pro unlocked,B07K3CJQ1F,"Apple iPad Pro (11-inch, Wi-Fi + Cellular, 256GB) - Space Gray (Latest Model)",S,2,0.08001813849131556,14,0.16325088512687316,15,0.8971087642976421,15
+9724,apple iphone 11 pro unlocked,B07754YL4M,"Apple iPhone X, 64GB, Silver - For AT&T / T-Mobile (Renewed)",S,2,0.8838451913898263,3,0.09186731495385095,16,0.842304655778244,16

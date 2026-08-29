@@ -1,0 +1,17 @@
+query_id,query,product_id,product_title,esci_label,relevance_gain,random_score,rank_random,tfidf_score,rank_tfidf,bm25_score,rank_bm25
+106401,ugly stik custom,B00A0PA3R0,"Wild River CLC WT3505 Tackle Tek Mission Lighted Convertible Tackle Bag with Four PT3500 Trays, Small",I,0,0.8871212862126845,3,0.0,9,0.0,1
+106401,ugly stik custom,B00A0PA4R4,"Wild River by CLC WT3503 Tackle Tek Recon Lighted Compact Tackle Backpack & Four PT3500 Trays, Clear, Water-Resistant Phone Storage",I,0,0.5318567352239485,6,0.0,10,0.0,2
+106401,ugly stik custom,B00F66Z2XS,"Wild River CLC WCN503 Tackle Tek Recon LED Lighted Camo Compact Backpack without Trays, Mossy Oak",I,0,0.22728555598367717,11,0.0,11,0.0,3
+106401,ugly stik custom,B00FH3WNY6,"Shakespeare USSP662M/35CBO Ugly Stik GX2 2-Piece Fishing Rod and Spinning Reel Combo, 6 Feet 6 Inch, Medium Power",E,3,0.03629264508908425,15,0.1921857609507678,8,0.0,4
+106401,ugly stik custom,B00QQUEGOO,"Wild River CLC WN3508 Multi-Tackle Small Backpack without Trays, Beige",I,0,0.23095172164542788,10,0.0,12,0.0,5
+106401,ugly stik custom,B00QROOCRU,Wild River CLC WT3606 Multi-Tackle Large Backpack with Two 3600 Style Trays,I,0,0.004336370325093153,16,0.0,13,0.0,6
+106401,ugly stik custom,B00T5VQ7WK,"Wild River Nomad CLC WCN604 Tackle Tek Nomad LED Lighted Camo Backpack, Mossy Oak",I,0,0.43231359512236467,8,0.0,14,0.0,7
+106401,ugly stik custom,B011LUVJWU,Ugly Stik GX2 Baitcast Combo,E,3,0.2568302331740826,9,0.4212255583764613,6,0.0,8
+106401,ugly stik custom,B011ODA4W0,Shakespeare Ugly Stik Logo Hoodie,I,0,0.682348771331445,5,0.4511770780213013,4,0.0,9
+106401,ugly stik custom,B011ODOFIY,Shakespeare Ugly Stik Logo Hoodie,I,0,0.04910368473031934,14,0.4511770780213013,5,0.0,10
+106401,ugly stik custom,B01IDENDX0,Ugly Stik Bigwater Spinning Rod,E,3,0.7780988754439495,4,0.5543030626370145,1,0.0,11
+106401,ugly stik custom,B01IDENFAG,Ugly Stik Bigwater Spinning Rod,E,3,0.4730414674710939,7,0.5543030626370145,2,0.0,12
+106401,ugly stik custom,B01IDENI26,Ugly Stik Bigwater Spinning Rod,E,3,0.13467559954699626,13,0.5543030626370145,3,0.0,13
+106401,ugly stik custom,B01IDENTYS,"Ugly Stik Bigwater Spinning Rod , 7' - Medium Heavy - 1pc",E,3,0.963622069642438,1,0.3134560947630159,7,0.0,14
+106401,ugly stik custom,B01M8OY1CN,"Falcon Rods Medium-Heavy Casting Rod, 6'6"", Left/Right, Black",S,2,0.91976493783774,2,0.0,15,0.0,15
+106401,ugly stik custom,B072K2F7P2,Cadence Fishing CR5 Spinning Rods | 30 Ton Carbon | Fuji Reel Seat | Stainless Steel Guides with SiC Inserts | CR5-702S-MHF,S,2,0.21015364273944304,12,0.0,16,0.0,16

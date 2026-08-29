@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+.venv/
+venv/
+.env
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Raw and processed ESCI files must never be committed.
+# Keep directory placeholders and setup notes.
+data/raw/*
+!data/raw/README.md
+data/processed/*
+!data/processed/.gitkeep
+
+# Local notebook execution outputs can be regenerated.
+*.parquet
+!tests/fixtures/**/*.parquet
