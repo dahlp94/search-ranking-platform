@@ -1,6 +1,6 @@
 # Search, Ranking & Recommendation Platform
 
-Week 1 of an interview-ready applied ranking project: a **lexical candidate re-ranking baseline** and a trustworthy evaluation pipeline on Amazon Science's Shopping Queries (ESCI) dataset.
+An applied ranking project: a **lexical candidate re-ranking baseline** and a trustworthy evaluation pipeline on Amazon Science's Shopping Queries (ESCI) dataset.
 
 Later weeks will add machine-learned ranking, semantic/hybrid retrieval, serving, and deployment. Those are intentionally **not** in this repository yet.
 
@@ -16,7 +16,7 @@ Ordinary row-level accuracy hides that. It treats every query-product row as an 
 
 ## Task formulation
 
-Week 1 evaluates **lexical re-ranking over query-specific candidate sets supplied by the ESCI dataset**.
+This project evaluates **lexical re-ranking over query-specific candidate sets supplied by the ESCI dataset**.
 
 This stage is **candidate re-ranking, not full-catalog retrieval**.
 
@@ -32,7 +32,7 @@ BM25 in this project does **not** search the Amazon product catalog. It re-order
 
 We use the [Shopping Queries Dataset / ESCI](https://github.com/amazon-science/esci-data) (Reddy et al., 2022). This repository does **not** own or redistribute the raw Amazon files.
 
-Week 1 filters:
+Dataset filters:
 
 - `small_version == 1` (Task 1 / reduced set)
 - `product_locale == "us"`
@@ -77,7 +77,7 @@ These checks matter because NDCG/Recall/MRR assume we know the candidate set and
 
 The official dataset already has `split ∈ {train, test}`.
 
-- Official `split == "test"` is written to `data/processed/official_test_holdout.parquet` and **left untouched**. Week 1 does not iterate on it.
+- Official `split == "test"` is written to `data/processed/official_test_holdout.parquet` and **left untouched**. This baseline does not iterate on it.
 - Official training **query IDs** are split with seed `1234` into:
   - 85% project train
   - 15% project validation
@@ -87,7 +87,7 @@ The official dataset already has `split ∈ {train, test}`.
 
 Row-level splitting would leak: some candidates for a query could sit in train while others sit in validation. A later model could overfit that query's wording and look stronger than it would on new queries. **The unit being held out is the query.**
 
-Week 1 baselines are evaluated on **project validation only**.
+Lexical baselines are evaluated on **project validation only**.
 
 ---
 
@@ -127,7 +127,7 @@ All three methods re-rank each query's existing candidate set. None of them retr
 | TF-IDF | Cosine similarity between the query and `product_title`, with IDF estimated **inside that query's candidate set**. |
 | BM25 | Okapi BM25 on the same title text. |
 
-**BM25 scope (important):** BM25 statistics are computed within each query-specific candidate set for this Week 1 candidate re-ranking baseline. This is not a full product-catalog search engine and not a production retrieval index.
+**BM25 scope (important):** BM25 statistics are computed within each query-specific candidate set for this candidate re-ranking baseline. This is not a full product-catalog search engine and not a production retrieval index.
 
 Tied scores break ties by `product_id` ascending (then `example_id` if needed). Inherited DataFrame order is never the tie-breaker. Repeated runs on the same data produce the same ranking and the same metrics.
 
@@ -204,7 +204,7 @@ The official test set is not inspected.
 - No semantic retrieval
 - Offline ESCI labels rather than online customer outcomes (clicks, purchases, revenue)
 
-Those lexical failures are motivation for later weeks, not something Week 1 tries to paper over with embeddings.
+Those lexical failures are motivation for later weeks, not something this baseline tries to paper over with embeddings.
 
 ---
 
@@ -214,7 +214,7 @@ A later LambdaMART / XGBoost ranker is only interesting if it beats something ho
 
 ---
 
-## Reproduce Week 1
+## Reproduce the lexical baseline
 
 ```bash
 python -m venv .venv

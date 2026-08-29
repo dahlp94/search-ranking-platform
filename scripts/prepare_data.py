@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prepare the Week 1 US / small-version ESCI ranking tables."""
+"""Prepare the US / small-version ESCI ranking tables."""
 
 from __future__ import annotations
 

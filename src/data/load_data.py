@@ -1,4 +1,4 @@
-"""Load ESCI parquet files and apply the Week 1 US / small-version filters.
+"""Load ESCI parquet files and apply the project US / small-version filters.
 
 This project does not download or redistribute the official Amazon dataset.
 If the expected files are missing, we fail with setup instructions.
@@ -123,7 +123,7 @@ def load_products(path: Path | None = None, locale: str | None = "us") -> pd.Dat
     """Load product metadata.
 
     If locale is set, push the filter into the parquet read so we do not
-    materialize Japanese/Spanish catalog rows that Week 1 will not use.
+    materialize Japanese/Spanish catalog rows that this project will not use.
     """
     if path is None:
         _, path = require_raw_files()

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Evaluate Week 1 lexical re-ranking baselines on project validation queries.
+"""Evaluate lexical re-ranking baselines on project validation queries.
 
 Does not load or iterate on the official ESCI test holdout.
 """
@@ -91,7 +91,7 @@ def _write_examples(
     write_json(EXAMPLES_DIR / "selected_queries.json", selected)
 
     lines = [
-        "# Week 1 validation query inspection",
+        "# Validation query inspection",
         "",
         "These examples come from **project validation** only. The official test holdout was not inspected.",
         "",

@@ -1,4 +1,4 @@
-# Week 1 validation query inspection
+# Validation query inspection
 
 These examples come from **project validation** only. The official test holdout was not inspected.
 

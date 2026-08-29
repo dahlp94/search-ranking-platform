@@ -1,4 +1,4 @@
-"""Build the Week 1 processed tables from official ESCI parquet files."""
+"""Build the processed tables from official ESCI parquet files."""
 
 from __future__ import annotations
 
@@ -59,7 +59,7 @@ def prepare_dataset(
     seed: int = SEED,
     train_fraction: float = PROJECT_TRAIN_QUERY_FRACTION,
 ) -> dict[str, Any]:
-    """Load, validate, merge, split, and write processed Week 1 tables."""
+    """Load, validate, merge, split, and write processed ranking tables."""
     raw_dir = Path(raw_dir) if raw_dir is not None else RAW_DIR
     processed_dir = Path(processed_dir) if processed_dir is not None else PROCESSED_DIR
     processed_dir.mkdir(parents=True, exist_ok=True)
@@ -144,6 +144,6 @@ def prepare_dataset(
 
     print(f"[prepare] wrote {train_path}")
     print(f"[prepare] wrote {val_path}")
-    print(f"[prepare] wrote {test_path} (holdout; do not use for Week 1 iteration)")
+    print(f"[prepare] wrote {test_path} (holdout; do not use for baseline iteration)")
     print(f"[prepare] wrote {stats_path}")
     return stats

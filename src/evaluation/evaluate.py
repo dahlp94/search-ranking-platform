@@ -73,7 +73,7 @@ def compare_models(
     left: str = "bm25",
     right: str = "tfidf",
 ) -> dict[str, Any]:
-    """Descriptive query-level comparison. No hypothesis test in Week 1."""
+    """Descriptive query-level comparison. No hypothesis test in this baseline."""
     if left not in per_query_by_model or right not in per_query_by_model:
         raise KeyError(f"Need '{left}' and '{right}' in per_query_by_model.")
     left_df = per_query_by_model[left][["query_id", "query", metric]].rename(

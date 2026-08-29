@@ -1,4 +1,4 @@
-"""Week 1 ranking evaluation."""
+"""Ranking evaluation for the lexical baseline."""
 
 from src.evaluation.evaluate import compare_models, per_query_metrics, summarize_query_metrics
 from src.evaluation.metrics import ndcg_at_k, recall_at_k, reciprocal_rank

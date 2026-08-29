@@ -1,6 +1,6 @@
 """BM25 candidate re-ranking for a single query's ESCI candidate set.
 
-Week 1 uses BM25 as a query-specific re-ranker. Corpus statistics (IDF, average
+This baseline uses BM25 as a query-specific re-ranker. Corpus statistics (IDF, average
 document length) are estimated from the candidate product texts associated with
 THAT query. This is not a full-catalog retrieval index and does not search the
 Amazon product catalog.

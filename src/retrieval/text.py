@@ -1,6 +1,6 @@
 """Light text normalization shared by queries and product fields.
 
-Week 1 is a lexical baseline. We lowercase and squeeze whitespace, but we do
+This is a lexical baseline. We lowercase and squeeze whitespace, but we do
 not stem, lemmatize, or strip model numbers / SKUs. Those tokens are often
 the exact signal a shopper typed.
 """

@@ -1,4 +1,4 @@
-"""Retrieval helpers for Week 1 candidate re-ranking."""
+"""Retrieval helpers for candidate re-ranking."""
 
 from src.retrieval.baselines import rank_random, rank_tfidf
 from src.retrieval.bm25 import rank_candidates

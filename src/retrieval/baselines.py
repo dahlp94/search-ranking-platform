@@ -67,8 +67,8 @@ def rank_tfidf(
 ) -> pd.DataFrame:
     """TF-IDF cosine similarity between the query and each candidate document.
 
-    IDF is computed from this query's candidate texts only, matching the Week 1
-    BM25 design: query-specific candidate re-ranking, not a global index.
+    IDF is computed from this query's candidate texts only, matching this
+    project's BM25 design: query-specific candidate re-ranking, not a global index.
     """
     out = candidates.copy()
     if text_col not in out.columns:

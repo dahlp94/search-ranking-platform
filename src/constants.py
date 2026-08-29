@@ -1,4 +1,4 @@
-"""Project-wide conventions for Week 1.
+"""Project-wide conventions for the lexical baseline.
 
 Keep these mappings in one place so evaluation stays internally consistent.
 They are this project's conventions, not Amazon's official benchmark gains.

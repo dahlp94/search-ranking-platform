@@ -6,7 +6,7 @@ model could look stronger than it is because it already saw that query's
 candidate set during development.
 
 The official ESCI `split=='test'` partition stays untouched as a final holdout.
-Week 1 baselines are evaluated on a project validation slice of official train.
+Lexical baselines are evaluated on a project validation slice of official train.
 """
 
 from __future__ import annotations
