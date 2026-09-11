@@ -1,0 +1,38 @@
+{
+  "model_type": "XGBRanker",
+  "xgboost_version": "3.4.1",
+  "objective": "rank:ndcg",
+  "eval_metric": "ndcg@10",
+  "hyperparameters": {
+    "objective": "rank:ndcg",
+    "eval_metric": "ndcg@10",
+    "n_estimators": 200,
+    "max_depth": 4,
+    "learning_rate": 0.1,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "tree_method": "hist",
+    "random_state": 1234
+  },
+  "features": [
+    "bm25_score",
+    "tfidf_score",
+    "shared_token_count",
+    "query_token_coverage",
+    "title_token_coverage",
+    "exact_query_in_title",
+    "brand_match",
+    "title_token_count",
+    "token_length_difference",
+    "query_bullet_coverage"
+  ],
+  "train_rows": 356615,
+  "train_queries": 17754,
+  "validation_rows": 63038,
+  "validation_queries": 3134,
+  "train_ndcg@10": 0.7852035382529009,
+  "validation_ndcg@10": 0.7755163481556213,
+  "model_path": "/Users/pratikdahal/Desktop/internship/search-ranking-platform/artifacts/models/xgb_ranker.json",
+  "reload_check": true,
+  "official_test_used": false
+}
