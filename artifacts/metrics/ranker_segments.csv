@@ -1,0 +1,4 @@
+query_length_segment,n_queries,mean_delta_ndcg_at_10
+1 token,100,0.01916264270012199
+2–3 tokens,1377,0.006332264128848733
+4+ tokens,1657,0.005552370815646371

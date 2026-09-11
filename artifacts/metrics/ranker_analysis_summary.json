@@ -1,0 +1,147 @@
+{
+  "primary_model_retrained": false,
+  "official_test_used": false,
+  "feature_importance": [
+    {
+      "feature": "tfidf_score",
+      "gain": 34.78101348876953,
+      "gain_importance": 0.3362959996078664,
+      "rank": 1
+    },
+    {
+      "feature": "query_token_coverage",
+      "gain": 22.30675506591797,
+      "gain_importance": 0.21568297586621338,
+      "rank": 2
+    },
+    {
+      "feature": "title_token_coverage",
+      "gain": 11.519121170043945,
+      "gain_importance": 0.1113778461267349,
+      "rank": 3
+    },
+    {
+      "feature": "query_bullet_coverage",
+      "gain": 8.112509727478027,
+      "gain_importance": 0.07843947874065473,
+      "rank": 4
+    },
+    {
+      "feature": "brand_match",
+      "gain": 5.320626258850098,
+      "gain_importance": 0.05144488750558135,
+      "rank": 5
+    },
+    {
+      "feature": "exact_query_in_title",
+      "gain": 5.165503978729248,
+      "gain_importance": 0.04994501740341952,
+      "rank": 6
+    },
+    {
+      "feature": "title_token_count",
+      "gain": 4.733794689178467,
+      "gain_importance": 0.045770840388239684,
+      "rank": 7
+    },
+    {
+      "feature": "token_length_difference",
+      "gain": 4.075602054595947,
+      "gain_importance": 0.039406806457689195,
+      "rank": 8
+    },
+    {
+      "feature": "shared_token_count",
+      "gain": 3.7106285095214844,
+      "gain_importance": 0.0358778942478459,
+      "rank": 9
+    },
+    {
+      "feature": "bm25_score",
+      "gain": 3.6982548236846924,
+      "gain_importance": 0.035758253655755,
+      "rank": 10
+    }
+  ],
+  "ablation": [
+    {
+      "variant": "full",
+      "n_features": 10,
+      "ndcg@10": 0.8236221705751066,
+      "recall@10": 0.5928785554159535,
+      "mrr": 0.9089200086767093,
+      "delta_vs_full": 0.0,
+      "delta_vs_tfidf": 0.006329314108795003
+    },
+    {
+      "variant": "lexical_scores",
+      "n_features": 2,
+      "ndcg@10": 0.8157284721739436,
+      "recall@10": 0.5909710277875222,
+      "mrr": 0.904596918995871,
+      "delta_vs_full": -0.00789369840116294,
+      "delta_vs_tfidf": -0.0015643842923679374
+    },
+    {
+      "variant": "minus_tfidf",
+      "n_features": 9,
+      "ndcg@10": 0.8233761361208102,
+      "recall@10": 0.5922619812858189,
+      "mrr": 0.9117002878529682,
+      "delta_vs_full": -0.0002460344542963844,
+      "delta_vs_tfidf": 0.006083279654498619
+    },
+    {
+      "variant": "minus_bm25",
+      "n_features": 9,
+      "ndcg@10": 0.8237806832218496,
+      "recall@10": 0.5933622988429025,
+      "mrr": 0.9101752104344638,
+      "delta_vs_full": 0.00015851264674304755,
+      "delta_vs_tfidf": 0.006487826755538051
+    },
+    {
+      "variant": "minus_overlap",
+      "n_features": 5,
+      "ndcg@10": 0.8212761522889127,
+      "recall@10": 0.5944924185506195,
+      "mrr": 0.908166210694928,
+      "delta_vs_full": -0.0023460182861938517,
+      "delta_vs_tfidf": 0.003983295822601152
+    },
+    {
+      "variant": "minus_structured",
+      "n_features": 7,
+      "ndcg@10": 0.8225295427630334,
+      "recall@10": 0.592447677026747,
+      "mrr": 0.9104262839904194,
+      "delta_vs_full": -0.0010926278120731991,
+      "delta_vs_tfidf": 0.005236686296721804
+    }
+  ],
+  "segments": [
+    {
+      "query_length_segment": "1 token",
+      "n_queries": 100,
+      "mean_delta_ndcg_at_10": 0.01916264270012199
+    },
+    {
+      "query_length_segment": "2\u20133 tokens",
+      "n_queries": 1377,
+      "mean_delta_ndcg_at_10": 0.006332264128848733
+    },
+    {
+      "query_length_segment": "4+ tokens",
+      "n_queries": 1657,
+      "mean_delta_ndcg_at_10": 0.005552370815646371
+    }
+  ],
+  "inspection_query_ids": [
+    100955,
+    107914,
+    18994,
+    67057,
+    78865,
+    102658
+  ]
+}

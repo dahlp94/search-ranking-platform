@@ -100,3 +100,64 @@ def prepare_grouped_data(
         group_sizes=group_sizes,
         features=tuple(features),
     )
+
+FORBIDDEN_FEATURE_COLUMNS = {
+    "query_id",
+    "product_id",
+    "example_id",
+    "esci_label",
+    "relevance_gain",
+    "query",
+    "split",
+}
+
+
+def validate_feature_subset(features) -> list[str]:
+    """Validate a non-empty subset of approved ranking features."""
+    features = list(features)
+
+    if not features:
+        raise RankingGroupError("Feature subset is empty.")
+
+    forbidden = [f for f in features if f in FORBIDDEN_FEATURE_COLUMNS]
+    if forbidden:
+        raise RankingGroupError(
+            f"Identifier or target columns cannot be model features: {forbidden}."
+        )
+
+    unknown = [f for f in features if f not in FEATURES]
+    if unknown:
+        raise RankingGroupError(f"Unknown ranking features: {unknown}.")
+
+    return [f for f in FEATURES if f in features]
+
+
+def prepare_grouped_subset(
+    df: pd.DataFrame,
+    features,
+) -> GroupedRankingData:
+    """Prepare query-grouped data for a feature subset."""
+    features = validate_feature_subset(features)
+
+    required = ["query_id", "example_id", "relevance_gain", *features]
+    missing = [col for col in required if col not in df.columns]
+
+    if missing:
+        raise RankingGroupError(f"Missing required columns: {missing}")
+
+    ordered = (
+        df.sort_values(["query_id", "example_id"], kind="mergesort")
+        .reset_index(drop=True)
+    )
+
+    return GroupedRankingData(
+        frame=ordered,
+        X=ordered[features].copy(),
+        y=ordered["relevance_gain"].to_numpy(dtype=float),
+        group_sizes=(
+            ordered.groupby("query_id", sort=False)
+            .size()
+            .to_numpy(dtype=np.int64)
+        ),
+        features=tuple(features),
+    )
