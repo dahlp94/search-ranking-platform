@@ -1,12 +1,9 @@
-"""Simple lexical baselines: random permutation and TF-IDF cosine similarity.
-
-Both methods re-rank the candidate products already associated with a query.
-They do not retrieve from the full Amazon catalog.
-"""
+"""Simple lexical baselines for candidate re-ranking."""
 
 from __future__ import annotations
 
 import hashlib
+from collections.abc import Sequence
 
 import numpy as np
 import pandas as pd
@@ -19,9 +16,9 @@ from src.retrieval.text import normalize_text, tokenize
 
 
 def _query_seed(query_id: object, seed: int) -> int:
-    """Stable per-query RNG seed that does not depend on PYTHONHASHSEED."""
-    payload = f"{seed}:{query_id}".encode("utf-8")
-    digest = hashlib.blake2b(payload, digest_size=8).digest()
+    """Create a stable random seed for one query."""
+    text = f"{seed}:{query_id}".encode()
+    digest = hashlib.blake2b(text, digest_size=8).digest()
     return int.from_bytes(digest, "little") % (2**32)
 
 
@@ -31,32 +28,53 @@ def rank_random(
     k: int | None = None,
     seed: int = SEED,
 ) -> pd.DataFrame:
-    """Randomly permute a query's candidates with a fixed seed.
+    """Randomly rank candidates using a reproducible per-query seed."""
+    del query
 
-    This baseline calibrates ranking metrics. It is not intended to be competitive.
-    Random scores are assigned after sorting by product_id so the inherited
-    DataFrame order cannot affect the permutation.
-    """
-    del query  # the query string is unused; randomness is keyed by query_id + seed
     if candidates.empty:
         out = candidates.copy()
-        out["random_score"] = pd.Series(dtype=float)
-        out["predicted_rank"] = pd.Series(dtype=int)
+        out["random_score"] = []
+        out["predicted_rank"] = []
         return out
 
-    out = candidates.copy()
-    if "query_id" not in out.columns:
-        raise KeyError("rank_random requires a query_id column.")
-    query_ids = out["query_id"].unique()
+    if "query_id" not in candidates.columns:
+        raise KeyError("Missing query_id column.")
+
+    query_ids = candidates["query_id"].unique()
     if len(query_ids) != 1:
-        raise ValueError(
-            "rank_random expects candidates from a single query; "
-            f"received {len(query_ids)} query_ids."
-        )
+        raise ValueError("Candidates must belong to one query.")
+
+    out = candidates.sort_values("product_id", kind="mergesort").copy()
+
     rng = np.random.default_rng(_query_seed(query_ids[0], seed))
-    out = out.sort_values("product_id", kind="mergesort")
     out["random_score"] = rng.random(len(out))
+
     return sort_and_rank(out, score_col="random_score", k=k)
+
+
+def candidate_tfidf_scores(
+    query: str,
+    documents: Sequence[object],
+) -> np.ndarray:
+    """Compute TF-IDF cosine similarity within one query's candidate set."""
+    docs = [normalize_text(doc) for doc in documents]
+    query = normalize_text(query)
+
+    if not docs or not tokenize(query) or not any(tokenize(doc) for doc in docs):
+        return np.zeros(len(docs))
+
+    vectorizer = TfidfVectorizer(
+        analyzer=tokenize,
+        lowercase=False,
+        norm="l2",
+    )
+
+    try:
+        doc_matrix = vectorizer.fit_transform(docs)
+        query_vector = vectorizer.transform([query])
+        return cosine_similarity(query_vector, doc_matrix).ravel()
+    except ValueError:
+        return np.zeros(len(docs))
 
 
 def rank_tfidf(
@@ -65,31 +83,14 @@ def rank_tfidf(
     k: int | None = None,
     text_col: str = "product_text",
 ) -> pd.DataFrame:
-    """TF-IDF cosine similarity between the query and each candidate document.
+    """Rank candidates by candidate-local TF-IDF similarity."""
+    if text_col not in candidates.columns:
+        raise KeyError(f"Missing text column: {text_col}")
 
-    IDF is computed from this query's candidate texts only, matching this
-    project's BM25 design: query-specific candidate re-ranking, not a global index.
-    """
     out = candidates.copy()
-    if text_col not in out.columns:
-        raise KeyError(f"Missing text column '{text_col}'.")
+    out["tfidf_score"] = candidate_tfidf_scores(
+        query,
+        out[text_col],
+    )
 
-    documents = out[text_col].map(normalize_text).tolist()
-    query_text = normalize_text(query)
-    n = len(documents)
-    scores = np.zeros(n, dtype=float)
-
-    tokenized_docs = [tokenize(text) for text in documents]
-    has_vocab = any(tokenized_docs) and len(tokenize(query_text)) > 0
-    if n > 0 and has_vocab:
-        vectorizer = TfidfVectorizer(analyzer=tokenize, lowercase=False, norm="l2")
-        try:
-            doc_matrix = vectorizer.fit_transform(documents)
-            query_vector = vectorizer.transform([query_text])
-            scores = cosine_similarity(query_vector, doc_matrix).ravel()
-        except ValueError:
-            # Empty vocabulary after tokenization.
-            scores = np.zeros(n, dtype=float)
-
-    out["tfidf_score"] = scores
     return sort_and_rank(out, score_col="tfidf_score", k=k)
