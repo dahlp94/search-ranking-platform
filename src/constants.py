@@ -18,13 +18,6 @@ RELEVANCE_GAIN = {
     "I": 0,
 }
 
-# RELEVANCE_GAIN = {
-#     "E": 1.0,
-#     "S": 0.1,
-#     "C": 0.01,
-#     "I": 0.0,
-# }
-
 # Binary relevance used by Recall@K and MRR.
 # Exact and Substitute count as relevant; Complement and Irrelevant do not.
 BINARY_RELEVANT_LABELS = frozenset({"E", "S"})

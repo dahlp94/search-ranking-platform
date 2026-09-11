@@ -1,8 +1,10 @@
-# Search, Ranking & Recommendation Platform
+# Product Search & Ranking Platform
 
-An applied ranking project: a **lexical candidate re-ranking baseline** and a trustworthy evaluation pipeline on Amazon Science's Shopping Queries (ESCI) dataset.
+A **lexical candidate re-ranking** baseline and query-level evaluation pipeline on Amazon Science's Shopping Queries (ESCI) dataset.
 
-Later weeks will add machine-learned ranking, semantic/hybrid retrieval, serving, and deployment. Those are intentionally **not** in this repository yet.
+The current implementation focuses on candidate re-ranking: Amazon ESCI provides a judged candidate set for each query, and the system evaluates how effectively different ranking methods order those candidates. Full-catalog retrieval is a future extension and is not part of the current implementation.
+
+This repository does **not** currently include learning-to-rank, semantic or vector retrieval, personalization, recommendation systems, online experiments, or production serving.
 
 ---
 
@@ -199,18 +201,18 @@ The official test set is not inspected.
 - Candidate-set evaluation rather than full-catalog retrieval
 - Query-specific BM25 / TF-IDF corpus statistics, not a global index
 - Lexical matching only: synonyms, semantic intent, and vocabulary mismatch can fail
-- No personalization
+- No personalization or recommendation system
 - No machine-learned ranking
-- No semantic retrieval
+- No semantic or vector retrieval
 - Offline ESCI labels rather than online customer outcomes (clicks, purchases, revenue)
 
-Those lexical failures are motivation for later weeks, not something this baseline tries to paper over with embeddings.
+Those lexical failures are known limits of this baseline, not something it tries to paper over with embeddings.
 
 ---
 
 ## Why these baselines exist
 
-A later LambdaMART / XGBoost ranker is only interesting if it beats something honest. Random tells us the metric scale. TF-IDF is a simple lexical similarity control. BM25 is the standard sparse retrieval/re-ranking baseline. If Week 2 cannot beat BM25 on validation, the learned model is not yet earning its complexity.
+A later learned ranker is only interesting if it beats something honest. Random calibrates the metric scale. TF-IDF is a simple lexical similarity control. BM25 is the standard sparse re-ranking baseline. The current strongest lexical result is the floor any future model must beat on validation.
 
 ---
 
@@ -243,10 +245,6 @@ tests/             synthetic fixtures only; no official ESCI in CI
 ```
 
 ---
-
-## Next step
-
-Week 2 will add machine-learned ranking using query-product features. It is not implemented here.
 
 ## Citation
 
