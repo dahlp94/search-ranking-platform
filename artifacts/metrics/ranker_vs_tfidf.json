@@ -1,0 +1,75 @@
+{
+  "metric": "ndcg@10",
+  "n_queries": 3134,
+  "wins": 1580,
+  "losses": 1226,
+  "ties": 328,
+  "mean_delta": 0.006329314108794818,
+  "median_delta": 0.0008543387305985917,
+  "win_rate": 0.5041480536056159,
+  "loss_rate": 0.39119336311423103,
+  "tie_rate": 0.10465858328015316,
+  "tie_atol": 1e-12,
+  "bootstrap_replicates": 2000,
+  "bootstrap_seed": 1234,
+  "bootstrap_resampling_unit": "query",
+  "bootstrap_ci_95": [
+    0.0036671876001864857,
+    0.009107610075404901
+  ],
+  "top_5_positive_delta": [
+    {
+      "query_id": 100955,
+      "query": "tea bag dish alice",
+      "delta_ndcg_at_10": 0.5693234419266069
+    },
+    {
+      "query_id": 107914,
+      "query": "vape without nicotine",
+      "delta_ndcg_at_10": 0.5197043081413336
+    },
+    {
+      "query_id": 18994,
+      "query": "bowling ball detox machine",
+      "delta_ndcg_at_10": 0.4183408223720876
+    },
+    {
+      "query_id": 23278,
+      "query": "carolyn t. brown",
+      "delta_ndcg_at_10": 0.3870159539471055
+    },
+    {
+      "query_id": 7460,
+      "query": "airis mystica",
+      "delta_ndcg_at_10": 0.3562071871080222
+    }
+  ],
+  "bottom_5_delta": [
+    {
+      "query_id": 67057,
+      "query": "melissa moore",
+      "delta_ndcg_at_10": -0.6782912781298771
+    },
+    {
+      "query_id": 78865,
+      "query": "pentrrex 4oz",
+      "delta_ndcg_at_10": -0.6559887626015177
+    },
+    {
+      "query_id": 102658,
+      "query": "thick maternity yoga pants",
+      "delta_ndcg_at_10": -0.5542658296496528
+    },
+    {
+      "query_id": 66466,
+      "query": "mattress topper memory foam full",
+      "delta_ndcg_at_10": -0.49014983803173173
+    },
+    {
+      "query_id": 227,
+      "query": "+proofer for yogourt -brod and not frozen and not automatic",
+      "delta_ndcg_at_10": -0.4692787260227565
+    }
+  ],
+  "official_test_used": false
+}

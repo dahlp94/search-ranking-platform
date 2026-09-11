@@ -1,0 +1,30 @@
+{
+  "partition": "project_validation",
+  "rows": 63038,
+  "queries": 3134,
+  "model_path": "/Users/pratikdahal/Desktop/internship/search-ranking-platform/artifacts/models/xgb_ranker.json",
+  "model_retrained": false,
+  "official_test_used": false,
+  "XGBRanker": {
+    "ndcg@10": 0.8236221705751066,
+    "recall@10": 0.5928785554159535,
+    "mrr": 0.9089200086767093
+  },
+  "baseline_references": {
+    "random": {
+      "ndcg@10": 0.7610970382900956,
+      "recall@10": 0.5684262087724409,
+      "mrr": 0.875707577860387
+    },
+    "tfidf": {
+      "ndcg@10": 0.8172928564663116,
+      "recall@10": 0.5921824261421161,
+      "mrr": 0.9059623832841177
+    },
+    "bm25": {
+      "ndcg@10": 0.8124080379065216,
+      "recall@10": 0.5906139164403201,
+      "mrr": 0.898849526984918
+    }
+  }
+}
