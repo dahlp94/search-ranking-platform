@@ -1,0 +1,20 @@
+{
+  "metric": "ndcg@10",
+  "comparison": "semantic_ltr - reference_ltr",
+  "n_queries": 3134,
+  "wins": 1677,
+  "losses": 1205,
+  "ties": 252,
+  "mean_delta": 0.02049026843848333,
+  "median_delta": 0.003581218613188719,
+  "win_rate": 0.5350989151244416,
+  "loss_rate": 0.3844926611359285,
+  "tie_rate": 0.08040842373962986,
+  "tie_atol": 1e-12,
+  "bootstrap_replicates": 2000,
+  "bootstrap_ci_95": [
+    0.01730624989374625,
+    0.023613395894318955
+  ],
+  "official_test_used": false
+}

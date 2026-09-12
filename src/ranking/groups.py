@@ -44,10 +44,21 @@ APPROVED_FEATURE_SETS = {
 }
 
 
+FORBIDDEN_FEATURE_COLUMNS = {
+    "query_id",
+    "product_id",
+    "example_id",
+    "esci_label",
+    "relevance_gain",
+    "query",
+    "split",
+}
+
+
 def assert_queries_disjoint(
     train: pd.DataFrame,
     validation: pd.DataFrame,
-) -> None:
+) -> int:
     """Fail if a query appears in both partitions."""
     overlap = set(train["query_id"]) & set(validation["query_id"])
 
@@ -55,6 +66,8 @@ def assert_queries_disjoint(
         raise RankingGroupError(
             f"Train and validation overlap on {len(overlap)} queries."
         )
+
+    return 0
 
 
 def validate_model_features(features) -> list[str]:
@@ -75,6 +88,12 @@ def validate_feature_subset(features) -> list[str]:
 
     if not features:
         raise RankingGroupError("Feature subset is empty.")
+
+    forbidden = [f for f in features if f in FORBIDDEN_FEATURE_COLUMNS]
+    if forbidden:
+        raise RankingGroupError(
+            f"Identifier or target columns cannot be model features: {forbidden}."
+        )
 
     unknown = [feature for feature in features if feature not in FEATURES]
 
