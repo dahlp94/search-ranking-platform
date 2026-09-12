@@ -23,3 +23,14 @@ data/processed/*
 # Local notebook execution outputs can be regenerated.
 *.parquet
 !tests/fixtures/**/*.parquet
+
+# Generated semantic inputs
+artifacts/semantic_input/*.parquet
+
+# Generated semantic features
+artifacts/semantic/*.parquet
+artifacts/semantic/cache/
+
+# Temporary Colab handoff directories and archives
+artifacts/semantic_handoff/*/
+artifacts/semantic_handoff/*.zip

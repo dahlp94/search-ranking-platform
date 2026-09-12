@@ -1,0 +1,45 @@
+{
+  "model_identifier": "sentence-transformers/all-MiniLM-L6-v2",
+  "model_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "embedding_dimension": 384,
+  "device": "cuda",
+  "batch_size": 256,
+  "normalization": "l2",
+  "sentence_transformers_version": "5.7.0",
+  "torch_version": "2.11.0+cu128",
+  "cuda_device_name": "Tesla T4",
+  "train_candidate_rows": 356615,
+  "validation_candidate_rows": 63038,
+  "train_queries": 17754,
+  "validation_queries": 3134,
+  "unique_query_texts": 20888,
+  "unique_title_texts": 348277,
+  "reused_query_rows": 398765,
+  "reused_title_rows": 71376,
+  "semantic_similarity": {
+    "train": {
+      "min": -0.17158472537994385,
+      "p1": 0.039178701937198634,
+      "p25": 0.37067748606204987,
+      "median": 0.49646782875061035,
+      "mean": 0.4751134775588007,
+      "p75": 0.5980499982833862,
+      "p99": 0.8151846134662627,
+      "max": 1.0,
+      "std": 0.17344729405708978
+    },
+    "validation": {
+      "min": -0.12635862827301025,
+      "p1": 0.043533678501844406,
+      "p25": 0.3745323717594147,
+      "median": 0.4990674704313278,
+      "mean": 0.47784471714598276,
+      "p75": 0.599035456776619,
+      "p99": 0.813928568959236,
+      "max": 1.0,
+      "std": 0.17227158233962714
+    }
+  },
+  "runtime_seconds": 185.539683707,
+  "official_test_used": false
+}
