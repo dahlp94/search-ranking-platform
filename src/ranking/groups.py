@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 from src.features.build import FEATURES
+from src.features.semantic import SEMANTIC_FEATURES
 
 
 class RankingGroupError(ValueError):
@@ -37,22 +38,16 @@ class GroupedRankingData:
         return self.frame["query_id"].to_numpy()
 
 
-def validate_model_features(features) -> list[str]:
-    """Require exactly the approved ranking features."""
-    features = list(features)
-
-    if features != list(FEATURES):
-        raise RankingGroupError(
-            f"Expected features {list(FEATURES)}, got {features}."
-        )
-
-    return features
+APPROVED_FEATURE_SETS = {
+    tuple(FEATURES),
+    tuple(SEMANTIC_FEATURES),
+}
 
 
 def assert_queries_disjoint(
     train: pd.DataFrame,
     validation: pd.DataFrame,
-) -> int:
+) -> None:
     """Fail if a query appears in both partitions."""
     overlap = set(train["query_id"]) & set(validation["query_id"])
 
@@ -61,31 +56,62 @@ def assert_queries_disjoint(
             f"Train and validation overlap on {len(overlap)} queries."
         )
 
-    return 0
+
+def validate_model_features(features) -> list[str]:
+    """Require one of the approved full ranking feature sets."""
+    features = tuple(features)
+
+    if features not in APPROVED_FEATURE_SETS:
+        raise RankingGroupError(
+            "Features must match the approved lexical or semantic feature set."
+        )
+
+    return list(features)
 
 
-def prepare_grouped_data(
+def validate_feature_subset(features) -> list[str]:
+    """Validate a non-empty subset of lexical ranking features."""
+    features = list(features)
+
+    if not features:
+        raise RankingGroupError("Feature subset is empty.")
+
+    unknown = [feature for feature in features if feature not in FEATURES]
+
+    if unknown:
+        raise RankingGroupError(
+            f"Unknown or disallowed ranking features: {unknown}."
+        )
+
+    return [feature for feature in FEATURES if feature in features]
+
+
+def _prepare(
     df: pd.DataFrame,
-    features=None,
+    features: list[str],
 ) -> GroupedRankingData:
-    """Sort rows by query and prepare XGBoost ranking groups."""
-    features = validate_model_features(
-        FEATURES if features is None else features
-    )
+    """Sort by query and build XGBoost ranking groups."""
+    required = [
+        "query_id",
+        "example_id",
+        "relevance_gain",
+        *features,
+    ]
 
-    required = ["query_id", "example_id", "relevance_gain", *features]
     missing = [column for column in required if column not in df.columns]
 
     if missing:
-        raise RankingGroupError(f"Missing required columns: {missing}")
+        raise RankingGroupError(
+            f"Missing required columns: {missing}"
+        )
 
     ordered = (
-        df.sort_values(["query_id", "example_id"], kind="mergesort")
+        df.sort_values(
+            ["query_id", "example_id"],
+            kind="mergesort",
+        )
         .reset_index(drop=True)
     )
-
-    X = ordered[features].copy()
-    y = ordered["relevance_gain"].to_numpy(dtype=float)
 
     group_sizes = (
         ordered.groupby("query_id", sort=False)
@@ -95,69 +121,31 @@ def prepare_grouped_data(
 
     return GroupedRankingData(
         frame=ordered,
-        X=X,
-        y=y,
+        X=ordered[features].copy(),
+        y=ordered["relevance_gain"].to_numpy(dtype=float),
         group_sizes=group_sizes,
         features=tuple(features),
     )
 
-FORBIDDEN_FEATURE_COLUMNS = {
-    "query_id",
-    "product_id",
-    "example_id",
-    "esci_label",
-    "relevance_gain",
-    "query",
-    "split",
-}
 
+def prepare_grouped_data(
+    df: pd.DataFrame,
+    features=None,
+) -> GroupedRankingData:
+    """Prepare data using an approved full feature set."""
+    features = validate_model_features(
+        FEATURES if features is None else features
+    )
 
-def validate_feature_subset(features) -> list[str]:
-    """Validate a non-empty subset of approved ranking features."""
-    features = list(features)
-
-    if not features:
-        raise RankingGroupError("Feature subset is empty.")
-
-    forbidden = [f for f in features if f in FORBIDDEN_FEATURE_COLUMNS]
-    if forbidden:
-        raise RankingGroupError(
-            f"Identifier or target columns cannot be model features: {forbidden}."
-        )
-
-    unknown = [f for f in features if f not in FEATURES]
-    if unknown:
-        raise RankingGroupError(f"Unknown ranking features: {unknown}.")
-
-    return [f for f in FEATURES if f in features]
+    return _prepare(df, features)
 
 
 def prepare_grouped_subset(
     df: pd.DataFrame,
     features,
 ) -> GroupedRankingData:
-    """Prepare query-grouped data for a feature subset."""
-    features = validate_feature_subset(features)
-
-    required = ["query_id", "example_id", "relevance_gain", *features]
-    missing = [col for col in required if col not in df.columns]
-
-    if missing:
-        raise RankingGroupError(f"Missing required columns: {missing}")
-
-    ordered = (
-        df.sort_values(["query_id", "example_id"], kind="mergesort")
-        .reset_index(drop=True)
-    )
-
-    return GroupedRankingData(
-        frame=ordered,
-        X=ordered[features].copy(),
-        y=ordered["relevance_gain"].to_numpy(dtype=float),
-        group_sizes=(
-            ordered.groupby("query_id", sort=False)
-            .size()
-            .to_numpy(dtype=np.int64)
-        ),
-        features=tuple(features),
+    """Prepare data using a lexical feature subset."""
+    return _prepare(
+        df,
+        validate_feature_subset(features),
     )
