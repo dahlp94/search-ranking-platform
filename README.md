@@ -1,250 +1,427 @@
 # Product Search & Ranking Platform
 
-A **lexical candidate re-ranking** baseline and query-level evaluation pipeline on Amazon Science's Shopping Queries (ESCI) dataset.
+A product-search **candidate re-ranking** project built on Amazon Science's Shopping Queries (ESCI) dataset.
 
-The current implementation focuses on candidate re-ranking: Amazon ESCI provides a judged candidate set for each query, and the system evaluates how effectively different ranking methods order those candidates. Full-catalog retrieval is a future extension and is not part of the current implementation.
+The project progresses from lexical baselines to supervised learning-to-rank and emphasizes:
 
-This repository does **not** currently include learning-to-rank, semantic or vector retrieval, personalization, recommendation systems, online experiments, or production serving.
+* trustworthy ranking evaluation;
+* query-level train/validation separation;
+* BM25 and TF-IDF baselines;
+* candidate-level ranking features;
+* query-grouped XGBRanker training;
+* paired query-level model comparison;
+* feature ablation and failure analysis.
 
----
+The current implementation focuses on **re-ranking candidate products already supplied by ESCI**. It does not yet perform full-catalog retrieval.
+
 
 ## Problem
 
-A search system has to put useful products near the top of a result list. Predicting whether one query-product pair is relevant is a classification problem. Ranking is different: the model is judged by **order**. A relevant product at position 15 is a worse outcome than the same product at position 2, even if both predictions are "relevant."
+Product search is an ordering problem.
 
-Ordinary row-level accuracy hides that. It treats every query-product row as an independent yes/no decision and ignores position.
+For a query, the goal is not simply to classify products as relevant or irrelevant. More relevant products should appear earlier in the result list.
 
----
+This project asks:
 
-## Task formulation
+> Given a query and an already-provided set of candidate products, can we rank the most relevant products near the top?
 
-This project evaluates **lexical re-ranking over query-specific candidate sets supplied by the ESCI dataset**.
+Amazon ESCI provides judged query-product candidate sets, making this a **candidate re-ranking** problem rather than a full-catalog retrieval problem.
 
-This stage is **candidate re-ranking, not full-catalog retrieval**.
-
-The ESCI Task 1 data already provides, for each query, a list of up to about 40 judged products. We ask:
-
-> Given the candidate products available for a query, can a lexical relevance model put the more relevant products near the top?
-
-BM25 in this project does **not** search the Amazon product catalog. It re-orders the candidates that ESCI already attached to the query.
-
----
 
 ## Dataset
 
-We use the [Shopping Queries Dataset / ESCI](https://github.com/amazon-science/esci-data) (Reddy et al., 2022). This repository does **not** own or redistribute the raw Amazon files.
+The project uses the [Amazon Science Shopping Queries Dataset (ESCI)](https://github.com/amazon-science/esci-data).
 
-Dataset filters:
+Current filters:
 
-- `small_version == 1` (Task 1 / reduced set)
-- `product_locale == "us"`
-- merge examples and products on **both** `product_id` and `product_locale`
+* `small_version == 1`
+* U.S. locale
+* examples and products merged on `(product_id, product_locale)`
 
-### How to obtain the official files
+The raw Amazon files are not redistributed in this repository.
 
-The products parquet is large (on the order of 1 GB). The code will **not** download it for you.
-
-1. Read the official page: https://github.com/amazon-science/esci-data
-2. Install Git LFS and clone:
-
-```bash
-git lfs install
-git clone https://github.com/amazon-science/esci-data.git
-```
-
-3. Copy these files into `data/raw/`:
+Expected files:
 
 ```text
 data/raw/shopping_queries_dataset_examples.parquet
 data/raw/shopping_queries_dataset_products.parquet
 ```
 
-If a file is missing, `python scripts/prepare_data.py` fails with the expected paths and these instructions.
-
----
 
 ## Data integrity
 
-Ranking metrics are only as trustworthy as the candidate lists.
+Ranking metrics are only useful if the candidate sets are trustworthy.
 
-- **Product merge key.** `(product_id, product_locale)` must be unique in the product table. Duplicate keys would make a many-to-one merge ambiguous and silently multiply candidates. The preparation step reports duplicates and **stops** rather than silently dropping them.
-- **Many-to-one merge.** Many query-product example rows may point at one product record, but each product-locale key should match one product record (`validate="many_to_one"`). We record rows before merge, rows after merge, matched rows, and unmatched rows. Unmatched rows are **kept and reported**, not deleted.
-- **Duplicate candidates.** `(query_id, product_id)` pairs are checked explicitly. Conflicting ESCI labels fail the pipeline. Non-conflicting duplicates are kept and documented rather than silently dropped.
+The preparation pipeline checks:
 
-These checks matter because NDCG/Recall/MRR assume we know the candidate set and the relevance of each item. Silent deduplication or a Cartesian join would make the baseline look better or worse for bookkeeping reasons, not ranking reasons.
+* uniqueness of `(product_id, product_locale)` product keys;
+* many-to-one example-to-product merges;
+* row counts before and after joins;
+* matched and unmatched product rows;
+* duplicate `(query_id, product_id)` candidates;
+* conflicting relevance labels.
 
----
+Potential integrity failures stop the pipeline rather than being silently corrected.
 
-## Experimental discipline
 
-The official dataset already has `split ∈ {train, test}`.
+## Experimental design
 
-- Official `split == "test"` is written to `data/processed/official_test_holdout.parquet` and **left untouched**. This baseline does not iterate on it.
-- Official training **query IDs** are split with seed `1234` into:
-  - 85% project train
-  - 15% project validation
-- Split unit is `query_id`, not the query-product row.
-- Project train, project validation, and official test query IDs are disjoint.
-- All candidate rows for a query stay in the same partition.
+The official ESCI test partition is isolated and left untouched during model development.
 
-Row-level splitting would leak: some candidates for a query could sit in train while others sit in validation. A later model could overfit that query's wording and look stronger than it would on new queries. **The unit being held out is the query.**
+Official training queries are split by `query_id` into:
 
-Lexical baselines are evaluated on **project validation only**.
+* **85% project train**
+* **15% project validation**
 
----
+Using the project seed:
 
-## Relevance conventions
+```text
+1234
+```
 
-ESCI labels are Exact, Substitute, Complement, and Irrelevant.
+All candidate rows belonging to the same query remain in the same partition.
 
-This project's graded mapping, used by NDCG, is:
+Current project split:
 
-| Label | Meaning      | Gain |
-| ----- | ------------ | ---: |
-| E     | Exact        |    3 |
-| S     | Substitute   |    2 |
-| C     | Complement   |    1 |
-| I     | Irrelevant   |    0 |
+```text
+Train rows:          356,615
+Train queries:        17,754
 
-Exact matches receive the highest gain, substitutes an intermediate gain, complements a lower positive gain, and irrelevant results zero gain.
+Validation rows:      63,038
+Validation queries:    3,134
+```
 
-This is an **internal project convention**. It is not claimed to reproduce Amazon's official benchmark gain scheme.
+Train and validation query IDs are required to be disjoint.
 
-For binary metrics (Recall@K and MRR):
 
-- **Relevant:** E or S
-- **Not relevant:** C or I
+## Relevance labels
 
-Complement is a real shopping relationship, but for "did we return a product the shopper could buy instead of browsing away?" we treat only Exact and Substitute as hits.
+ESCI relevance labels are mapped to graded gains:
 
----
+| Label | Meaning    | Gain |
+| ----- | ---------- | ---: |
+| E     | Exact      |    3 |
+| S     | Substitute |    2 |
+| C     | Complement |    1 |
+| I     | Irrelevant |    0 |
 
-## Baselines
+For binary Recall@10 and MRR calculations:
 
-All three methods re-rank each query's existing candidate set. None of them retrieve from the full catalog.
+```text
+Relevant:     E, S
+Not relevant: C, I
+```
 
-| Model | What it does |
-| ----- | ------------ |
-| Random | Shuffle candidates with a fixed seed. Calibrates the metrics. Not competitive. |
-| TF-IDF | Cosine similarity between the query and `product_title`, with IDF estimated **inside that query's candidate set**. |
-| BM25 | Okapi BM25 on the same title text. |
-
-**BM25 scope (important):** BM25 statistics are computed within each query-specific candidate set for this candidate re-ranking baseline. This is not a full product-catalog search engine and not a production retrieval index.
-
-Tied scores break ties by `product_id` ascending (then `example_id` if needed). Inherited DataFrame order is never the tie-breaker. Repeated runs on the same data produce the same ranking and the same metrics.
-
-Lexical document: `product_title`, lowercased, whitespace-normalized. Model numbers and alphanumeric tokens are kept. No stemming.
-
----
 
 ## Evaluation
 
-Metrics are computed **per query**, then aggregated (mean, median, std, 25th/75th percentile, number of queries). We do not treat query-product rows as i.i.d. observations.
+Metrics are calculated **per query** and then aggregated across queries.
 
-**NDCG@10.** Graded relevance. A relevant product counts more at rank 1 than at rank 10. The score is divided by the DCG of the ideal ordering, so 1.0 is a perfect ranking of that query's candidates.
+Primary metric:
 
-Formulation used here:
+### NDCG@10
+
+NDCG rewards highly relevant products appearing near the top while accounting for graded relevance.
 
 ```text
-DCG@k = Σ_{i=1..k} gain_i / log2(i + 1)
+DCG@k = Σ gain_i / log2(i + 1)
+
 NDCG@k = DCG@k / IDCG@k
 ```
 
-If IDCG is 0 (no positive-gain items), NDCG is 0, not NaN.
+Additional metrics:
 
-**Recall@10.** Of the products we consider relevant (E or S) for a query, how many appeared in the top 10? If a query has no E/S items, recall is 0.
+### Recall@10
 
-**MRR.** How quickly does the ranking return the first relevant (E or S) item? Reciprocal rank is `1/rank` of that first hit, or 0 if none exist.
+Measures how many relevant products appear within the first 10 results.
 
-Accuracy is the wrong lens: swapping two products can leave accuracy unchanged and still ruin the page the user sees.
+### MRR
 
----
+Measures how early the first relevant product appears.
 
-## Results
+The query, rather than the individual query-product row, is the primary evaluation unit.
 
-Populate this section only from `python scripts/run_baseline.py`. Values must come from executed code on project validation, never from placeholders.
 
-After a successful run, summary numbers live in:
+# Lexical Baselines
+
+Three initial candidate-ranking methods establish the benchmark.
+
+| Model  | Description                                                      |
+| ------ | ---------------------------------------------------------------- |
+| Random | Deterministic random ordering used to calibrate the metric scale |
+| BM25   | Candidate-local BM25 using product titles                        |
+| TF-IDF | Candidate-local TF-IDF cosine similarity using product titles    |
+
+These methods reorder the candidate products already associated with each ESCI query.
+
+They do **not** search the full Amazon product catalog.
+
+### Validation results
+
+| Model  |    NDCG@10 |  Recall@10 |        MRR |
+| ------ | ---------: | ---------: | ---------: |
+| Random |     0.7611 |     0.5684 |     0.8757 |
+| BM25   |     0.8124 |     0.5906 |     0.8988 |
+| TF-IDF | **0.8173** | **0.5922** | **0.9060** |
+
+TF-IDF became the strongest lexical benchmark.
+
+
+# Learning-to-Rank
+
+A supervised XGBRanker was trained using candidate-level signals from several feature families.
+
+### Lexical scores
 
 ```text
-artifacts/metrics/baseline_summary.json
-artifacts/metrics/baseline_per_query.csv
+bm25_score
+tfidf_score
 ```
 
-Inspection examples live in:
+### Query-product overlap
 
 ```text
-artifacts/examples/
+shared_token_count
+query_token_coverage
+title_token_coverage
+exact_query_in_title
+query_bullet_coverage
 ```
 
-If those files are missing, the official dataset has not been evaluated in this environment yet.
+### Structured and length signals
 
----
+```text
+brand_match
+title_token_count
+token_length_difference
+```
 
-## Example behavior
+The ranker uses:
 
-Representative **project validation** queries are exported by the baseline script after a real-data run. They are chosen to show:
+```text
+XGBRanker
+objective = rank:ndcg
+trees = 200
+```
 
-1. BM25 doing well
-2. BM25 doing poorly
-3. a brand / model-number query
-4. a broad/generic query
-5. lexical overlap that is misleading
-6. a query where TF-IDF and BM25 disagree
+Training preserves query groups so products are learned and evaluated relative to other candidates for the same query.
 
-The official test set is not inspected.
 
----
+## Learning-to-rank results
 
-## Limitations
+| Model         |    NDCG@10 |  Recall@10 |        MRR |
+| ------------- | ---------: | ---------: | ---------: |
+| Random        |     0.7611 |     0.5684 |     0.8757 |
+| BM25          |     0.8124 |     0.5906 |     0.8988 |
+| TF-IDF        |     0.8173 |     0.5922 |     0.9060 |
+| **XGBRanker** | **0.8236** | **0.5929** | **0.9089** |
 
-- Candidate-set evaluation rather than full-catalog retrieval
-- Query-specific BM25 / TF-IDF corpus statistics, not a global index
-- Lexical matching only: synonyms, semantic intent, and vocabulary mismatch can fail
-- No personalization or recommendation system
-- No machine-learned ranking
-- No semantic or vector retrieval
-- Offline ESCI labels rather than online customer outcomes (clicks, purchases, revenue)
+Compared with TF-IDF:
 
-Those lexical failures are known limits of this baseline, not something it tries to paper over with embeddings.
+```text
+Mean ΔNDCG@10:    +0.006329
+Median ΔNDCG@10:  +0.000854
 
----
+Wins:              1,580
+Losses:            1,226
+Ties:                328
+```
 
-## Why these baselines exist
+A paired query-level bootstrap with 2,000 replicates produced:
 
-A later learned ranker is only interesting if it beats something honest. Random calibrates the metric scale. TF-IDF is a simple lexical similarity control. BM25 is the standard sparse re-ranking baseline. The current strongest lexical result is the floor any future model must beat on validation.
+```text
+95% CI for mean ΔNDCG@10:
+[0.003667, 0.009108]
+```
 
----
+The result supports a **small but consistent validation improvement** over the strongest lexical baseline.
 
-## Reproduce the lexical baseline
+
+# What created the improvement?
+
+Feature importance alone does not tell us whether a feature provides unique ranking information, so the project also performs controlled feature ablations.
+
+### Gain importance
+
+The strongest fitted-tree signals were:
+
+| Rank | Feature               | Normalized gain |
+| ---: | --------------------- | --------------: |
+|    1 | TF-IDF score          |           0.336 |
+|    2 | Query token coverage  |           0.216 |
+|    3 | Title token coverage  |           0.111 |
+|    4 | Query bullet coverage |           0.078 |
+|    5 | Brand match           |           0.051 |
+
+TF-IDF was heavily used by the fitted trees, but ablation showed substantial redundancy among lexical signals.
+
+
+## Ablation results
+
+| Variant                   |     NDCG@10 | Δ vs full |
+| ------------------------- | ----------: | --------: |
+| Full model                | **0.82362** |         — |
+| BM25 + TF-IDF only        |     0.81573 |  -0.00789 |
+| Without TF-IDF            |     0.82338 |  -0.00025 |
+| Without BM25              |     0.82378 |  +0.00016 |
+| Without overlap/coverage  |     0.82128 |  -0.00235 |
+| Without structured/length |     0.82253 |  -0.00109 |
+
+The most important result is that the learning-to-rank improvement did **not** come from simply learning a combination of BM25 and TF-IDF.
+
+The lexical-score-only ranker performed slightly below TF-IDF itself.
+
+Explicit query-product overlap and coverage features provided meaningful additional ranking information.
+
+The ablation analysis also illustrates why tree feature importance should not be interpreted as unique or causal importance.
+
+
+# Failure analysis
+
+Aggregate metrics do not explain why a ranking model succeeds or fails.
+
+The project therefore preserves per-query comparisons and candidate-level examples for queries where XGBRanker strongly improves or regresses relative to TF-IDF.
+
+Observed limitations include:
+
+* lexical overlap rewarding the wrong product intent;
+* vocabulary mismatch;
+* typo sensitivity;
+* limited handling of negation;
+* difficulty representing semantic similarity when query and product wording differ.
+
+These failures motivate the next modeling question:
+
+> Can semantic relevance provide information beyond the current lexical learning-to-rank model?
+
+
+# Current pipeline
+
+```text
+Amazon ESCI candidate sets
+            ↓
+Data validation and query-level split
+            ↓
+Random / BM25 / TF-IDF baselines
+            ↓
+Candidate-level ranking features
+            ↓
+Query-grouped XGBRanker
+            ↓
+NDCG@10 / Recall@10 / MRR
+            ↓
+Paired query-level bootstrap
+            ↓
+Feature importance
+            ↓
+Ablation and failure analysis
+```
+
+
+# Reproduce
+
+Create the environment:
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-
-# After the official parquet files are in data/raw/:
-python scripts/prepare_data.py
-python -m pytest
-python scripts/run_baseline.py
-jupyter notebook notebooks/01_data_and_baseline_analysis.ipynb
 ```
 
----
+After placing the official ESCI parquet files in `data/raw/`:
 
-## Repository layout
+```bash
+python -m scripts.prepare_data
+python -m scripts.run_baseline
+python -m scripts.build_features
+python -m scripts.train_ranker
+python -m scripts.evaluate_ranker
+python -m scripts.analyze_ranker
+```
 
-Reusable logic lives in `src/`. The notebook is presentation, not the source of truth.
+Run tests:
+
+```bash
+python -m pytest -q
+```
+
+Current test suite:
 
 ```text
-src/data/          load, validate, merge, query-level split
-src/retrieval/     text normalization, random, TF-IDF, BM25
-src/evaluation/    NDCG / Recall / MRR, query-level aggregation
-scripts/           prepare_data.py, run_baseline.py
-tests/             synthetic fixtures only; no official ESCI in CI
+59 passed
 ```
 
----
+Analysis notebooks:
+
+```text
+notebooks/01_data_and_baseline_analysis.ipynb
+notebooks/02_learning_to_rank_analysis.ipynb
+```
+
+
+# Repository structure
+
+```text
+src/
+├── data/          data loading, validation, merging, query splitting
+├── retrieval/     text processing, Random, TF-IDF, BM25
+├── features/      candidate-level ranking features
+├── ranking/       query grouping and XGBRanker logic
+└── evaluation/    ranking metrics, comparison, bootstrap, analysis
+
+scripts/
+├── prepare_data.py
+├── run_baseline.py
+├── build_features.py
+├── train_ranker.py
+├── evaluate_ranker.py
+└── analyze_ranker.py
+
+notebooks/
+├── 01_data_and_baseline_analysis.ipynb
+└── 02_learning_to_rank_analysis.ipynb
+
+artifacts/
+├── features/
+├── models/
+├── metrics/
+└── examples/
+
+tests/
+```
+
+Reusable logic lives in `src/`. Scripts orchestrate reproducible workflows, while notebooks present and interpret saved results.
+
+
+# Current limitations
+
+The project currently demonstrates **candidate re-ranking**, not a complete search engine.
+
+It does not yet include:
+
+* full-catalog retrieval;
+* dense or vector retrieval;
+* semantic embedding features;
+* personalization;
+* recommendation systems;
+* online experiments;
+* production serving.
+
+The current results are offline results from the project-validation partition.
+
+The official ESCI test holdout remains untouched during model development.
+
+
+# Next direction
+
+The current XGBRanker establishes a stronger benchmark than the lexical baselines.
+
+The next question is:
+
+> **Does semantic relevance add incremental ranking value beyond the lexical learning-to-rank model?**
+
+The existing XGBRanker validation NDCG@10 of **0.8236** becomes the benchmark that future semantic modeling must justify itself against.
+
 
 ## Citation
 
